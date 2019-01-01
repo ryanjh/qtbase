@@ -28,3 +28,10 @@ The benefits of this project:
 
 * https://os.mbed.com/docs/v5.10/introduction/
 * https://os.mbed.com/platforms/ (Mbed-Enabled boards)
+
+Released Qt5 libraries ported to Arm Mbed-OS
+https://github.com/ryanjh/Qt5
+
+Examples:
+https://os.mbed.com/users/ryanjh31011/code/qt5-mbed-example-blinky/
+https://os.mbed.com/users/ryanjh31011/code/qt5-mbed-example-sys-info/
