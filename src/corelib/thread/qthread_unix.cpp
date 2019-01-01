@@ -121,6 +121,118 @@ enum { ThreadPriorityResetFlag = 0x80000000 };
 static __thread QThreadData *currentThreadData = 0;
 #endif
 
+#if defined(Q_OS_MBED)
+//#include <Thread.h>
+
+#define PTHREAD_ONCE_INIT {0}
+typedef enum {
+    PTHREAD_CANCEL_ENABLE,
+    PTHREAD_CANCEL_DISABLE
+};
+
+static void *save_key = 0;
+int pthread_setspecific(pthread_key_t key, const void *value)
+{
+    qDebug("TODO: pthread_setspecific");
+    save_key = (void*)value;
+    return 0;
+}
+
+int pthread_key_create(pthread_key_t *key, void (*destructor)(void *))
+{
+    qDebug("TODO: pthread_key_create");
+    return 0;
+}
+
+int pthread_once(pthread_once_t *once_control, void (*init_routine)(void))
+{
+    qDebug("TODO: pthread_once");
+    pthread_once_t pthread_once_init = PTHREAD_ONCE_INIT;
+    if (!memcmp(once_control, &pthread_once_init, sizeof(pthread_once_t))) {
+        memset(once_control, 1, sizeof(pthread_once_t));
+        init_routine();
+    }
+    return 0;
+}
+
+int pthread_key_delete(pthread_key_t key)
+{
+    qDebug("TODO: pthread_key_delete");
+    return 0;
+}
+
+void *pthread_getspecific(pthread_key_t key)
+{
+    qDebug("TODO: pthread_getspecific");
+    return save_key;
+}
+
+int pthread_setcancelstate(int state, int *oldstate)
+{
+    qDebug("TODO: pthread_setcancelstate");
+    return 0;
+}
+
+void pthread_cleanup_push(void (*routine)(void *), void *arg)
+{
+    qDebug("TODO: pthread_cleanup_push");
+}
+
+void pthread_cleanup_pop(int execute)
+{
+    qDebug("TODO: pthread_cleanup_pop");
+}
+
+void pthread_testcancel(void)
+{
+    qDebug("TODO: pthread_testcancel");
+}
+
+int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg)
+{
+    qDebug("TODO: pthread_create");
+    return 0;
+}
+
+int pthread_attr_init(pthread_attr_t *attr)
+{
+    qDebug("TODO: pthread_attr_init");
+    return 0;
+}
+
+int pthread_attr_setdetachstate(pthread_attr_t *attr, int detachstate)
+{
+    qDebug("TODO: pthread_attr_setdetachstate~");
+    return 0;
+}
+
+int pthread_attr_destroy(pthread_attr_t *attr)
+{
+    qDebug("TODO: pthread_attr_destroy");
+    return 0;
+}
+
+int pthread_cancel(pthread_t thread)
+{
+    qDebug("TODO: pthread_cancel");
+    return 0;
+}
+
+pthread_t pthread_self(void)
+{
+    qDebug("TODO: pthread_self");
+    //Thread::gettid();
+    return {0};
+}
+
+int sched_yield(void)
+{
+    qDebug("TODO: sched_yield");
+    //Thread::yield();
+    return 0;
+}
+#endif // Q_OS_MBED
+
 static pthread_once_t current_thread_data_once = PTHREAD_ONCE_INIT;
 static pthread_key_t current_thread_data_key;
 
@@ -505,6 +617,8 @@ int QThread::idealThreadCount() Q_DECL_NOTHROW
     // as of aug 2008 VxWorks < 6.6 only supports one single core CPU
     cores = 1;
 #  endif
+#elif defined(Q_OS_MBED)
+    qDebug("TODO: QThread::idealThreadCount");
 #else
     // the rest: Linux, Solaris, AIX, Tru64
     cores = (int)sysconf(_SC_NPROCESSORS_ONLN);
@@ -844,4 +958,3 @@ void QThreadPrivate::setPriority(QThread::Priority threadPriority)
 #endif // QT_NO_THREAD
 
 QT_END_NAMESPACE
-

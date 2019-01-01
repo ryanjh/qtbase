@@ -63,6 +63,17 @@ static void report_error(int code, const char *where, const char *what)
         qWarning("%s: %s failure: %s", where, what, qPrintable(qt_error_string(code)));
 }
 
+#if defined(Q_OS_MBED)
+int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr);
+int pthread_cond_destroy(pthread_cond_t *cond);
+int pthread_mutex_destroy(pthread_mutex_t *mutex);
+int pthread_mutex_lock(pthread_mutex_t *mutex);
+int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex);
+int pthread_cond_timedwait (pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *abstime);
+int pthread_cond_signal(pthread_cond_t *cond);
+int pthread_mutex_unlock(pthread_mutex_t *mutex);
+#endif // Q_OS_MBED
+
 #ifdef QT_UNIX_SEMAPHORE
 
 QMutexPrivate::QMutexPrivate()

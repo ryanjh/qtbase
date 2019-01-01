@@ -69,6 +69,80 @@ static int local_cond_timedwait_relative(pthread_cond_t*, pthread_mutex_t *, con
 __attribute__((weakref("__pthread_cond_timedwait_relative")));
 #endif
 
+#if defined(Q_OS_MBED)
+int pthread_condattr_init(pthread_condattr_t *attr)
+{
+    qDebug("TODO: pthread_condattr_init");
+    return 0;
+}
+
+int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)
+{
+    qDebug("TODO: pthread_cond_init");
+    return 0;
+}
+
+int pthread_condattr_destroy(pthread_condattr_t *attr)
+{
+    qDebug("TODO: pthread_condattr_destroy");
+    return 0;
+}
+
+int pthread_cond_timedwait (pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *abstime)
+{
+    qDebug("TODO: pthread_cond_timedwait");
+    return 0;
+}
+
+int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)
+{
+    qDebug("TODO: pthread_cond_wait");
+    return 0;
+}
+
+int pthread_mutex_unlock(pthread_mutex_t *mutex)
+{
+    qDebug("TODO: pthread_mutex_unlock");
+    return 0;
+}
+
+int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr)
+{
+    qDebug("TODO: pthread_mutex_init");
+    return 0;
+}
+
+int pthread_cond_destroy(pthread_cond_t *cond)
+{
+    qDebug("TODO: pthread_cond_destroy");
+    return 0;
+}
+
+int pthread_mutex_destroy(pthread_mutex_t *mutex)
+{
+    qDebug("TODO: pthread_mutex_destroy");
+    return 0;
+}
+
+int pthread_cond_signal(pthread_cond_t *cond)
+{
+    qDebug("TODO: pthread_cond_signal");
+    return 0;
+}
+
+int pthread_mutex_lock(pthread_mutex_t *mutex)
+{
+    qDebug("TODO: pthread_mutex_lock");
+    return 0;
+}
+
+int pthread_cond_broadcast(pthread_cond_t *cond)
+{
+    qDebug("TODO: pthread_cond_broadcast");
+    return 0;
+}
+#endif // Q_OS_MBED
+
 static void report_error(int code, const char *where, const char *what)
 {
     if (code != 0)

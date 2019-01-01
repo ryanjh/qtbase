@@ -52,7 +52,9 @@
 #include "qdatetime.h"
 #include "qvarlengtharray.h"
 
+#if !defined(Q_OS_MBED)
 #include <sys/mman.h>
+#endif // Q_OS_MBED
 #include <stdlib.h>
 #include <limits.h>
 #include <errno.h>
@@ -602,12 +604,16 @@ bool QFSFileEngine::setSize(qint64 size)
 {
     Q_D(QFSFileEngine);
     bool ret = false;
+#if defined(Q_OS_MBED)
+    qDebug("TODO: QFSFileEngine::setSize");
+#else
     if (d->fd != -1)
         ret = QT_FTRUNCATE(d->fd, size) == 0;
     else if (d->fh)
         ret = QT_FTRUNCATE(QT_FILENO(d->fh), size) == 0;
     else
         ret = QT_TRUNCATE(d->fileEntry.nativeFilePath().constData(), size) == 0;
+#endif // Q_OS_MBED
     if (!ret)
         setError(QFile::ResizeError, qt_error_string(errno));
     return ret;
@@ -664,6 +670,9 @@ uchar *QFSFileEnginePrivate::map(qint64 offset, qint64 size, QFile::MemoryMapFla
             && (QT_OFF_T(size) > metaData.size() - QT_OFF_T(offset)))
         qWarning("QFSFileEngine::map: Mapping a file beyond its size is not portable");
 
+#if defined(Q_OS_MBED)
+    qDebug("TODO: QFSFileEnginePrivate::map");
+#else
     int access = 0;
     if (openMode & QIODevice::ReadOnly) access |= PROT_READ;
     if (openMode & QIODevice::WriteOnly) access |= PROT_WRITE;
@@ -712,6 +721,7 @@ uchar *QFSFileEnginePrivate::map(qint64 offset, qint64 size, QFile::MemoryMapFla
         q->setError(QFile::UnspecifiedError, qt_error_string(int(errno)));
         break;
     }
+#endif
     return 0;
 }
 
@@ -724,6 +734,10 @@ bool QFSFileEnginePrivate::unmap(uchar *ptr)
         return false;
     }
 
+#if defined(Q_OS_MBED)
+    qDebug("TODO: QFSFileEnginePrivate::unmap");
+    return false;
+#else
     uchar *start = ptr - maps[ptr].first;
     size_t len = maps[ptr].second;
     if (-1 == munmap(start, len)) {
@@ -732,6 +746,7 @@ bool QFSFileEnginePrivate::unmap(uchar *ptr)
     }
     maps.remove(ptr);
     return true;
+#endif // Q_OS_MBED
 #else
     return false;
 #endif

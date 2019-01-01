@@ -1070,11 +1070,13 @@ void QDir::setNameFilters(const QStringList &nameFilters)
 */
 void QDir::addResourceSearchPath(const QString &path)
 {
-#ifdef QT_BUILD_CORE_LIB
-    QResource::addSearchPath(path);
-#else
+// #ifdef QT_BUILD_CORE_LIB
+//     QResource::addSearchPath(path);
+// #else
+    // TODO: Q_OS_MBED
+    qDebug("TODO: QDir::addResourceSearchPath");
     Q_UNUSED(path)
-#endif
+//#endif
 }
 
 #ifdef QT_BUILD_CORE_LIB

@@ -71,9 +71,14 @@ QTimerInfoList::QTimerInfoList()
 
         tms unused;
         previousTicks = times(&unused);
-
+#if defined(Q_OS_MBED)
+        qDebug("TODO: QTimerInfoList::QTimerInfoList");
+        ticksPerSecond = 0;
+        msPerTick = 0;
+#else
         ticksPerSecond = sysconf(_SC_CLK_TCK);
         msPerTick = 1000/ticksPerSecond;
+#endif
     } else {
         // detected monotonic timers
         previousTime.tv_sec = previousTime.tv_nsec = 0;

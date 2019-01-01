@@ -60,6 +60,20 @@
 # define _POSIX_MONOTONIC_CLOCK -1
 #endif
 
+#if defined(Q_OS_MBED)
+int clock_gettime(clockid_t clk_id, struct timespec *tp)
+{
+    qDebug("TODO: clock_gettime");
+    return 0;
+}
+
+int nanosleep(const struct timespec *req, struct timespec *rem)
+{
+    qDebug("TODO: nanosleep");
+    return 0;
+}
+#endif // Q_OS_MBED
+
 QT_BEGIN_NAMESPACE
 
 /*

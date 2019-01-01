@@ -68,10 +68,8 @@ SOURCES += \
         io/qstorageinfo.cpp \
         io/qtemporarydir.cpp \
         io/qtemporaryfile.cpp \
-        io/qresource.cpp \
         io/qresource_iterator.cpp \
         io/qsavefile.cpp \
-        io/qstandardpaths.cpp \
         io/qurl.cpp \
         io/qurlidna.cpp \
         io/qurlquery.cpp \
@@ -83,9 +81,7 @@ SOURCES += \
         io/qfilesystemwatcher_polling.cpp \
         io/qfilesystementry.cpp \
         io/qfilesystemengine.cpp \
-        io/qfileselector.cpp \
-        io/qloggingcategory.cpp \
-        io/qloggingregistry.cpp
+        io/qfileselector.cpp
 
 qtConfig(processenvironment) {
     SOURCES += \
@@ -135,15 +131,14 @@ win32 {
         SOURCES += \
                 io/qfsfileengine_unix.cpp \
                 io/qfilesystemengine_unix.cpp \
-                io/qlockfile_unix.cpp \
-                io/qfilesystemiterator_unix.cpp
+                io/qlockfile_unix.cpp
 
-        !integrity:!uikit {
-            SOURCES += io/forkfd_qt.cpp
-            HEADERS += \
-                     ../3rdparty/forkfd/forkfd.h
-            INCLUDEPATH += ../3rdparty/forkfd
-        }
+        #!integrity:!uikit {
+        #    SOURCES += io/forkfd_qt.cpp
+        #    HEADERS += \
+        #             ../3rdparty/forkfd/forkfd.h
+        #    INCLUDEPATH += ../3rdparty/forkfd
+        #}
         !nacl:mac: {
             SOURCES += io/qsettings_mac.cpp
         }
@@ -170,8 +165,7 @@ win32 {
             LIBS += -lbe
         } else {
             SOURCES += \
-                io/qstandardpaths_unix.cpp \
-                io/qstorageinfo_unix.cpp
+                io/qstandardpaths_unix.cpp
         }
 
         linux|if(qnx:qtConfig(inotify)) {
@@ -186,4 +180,3 @@ win32 {
             }
         }
 }
-

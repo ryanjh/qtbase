@@ -93,7 +93,9 @@
 #endif
 
 #ifdef Q_OS_UNIX
+#if !defined(Q_OS_MBED)
 #include <sys/utsname.h>
+#endif // Q_OS_MBED
 #include <private/qcore_unix_p.h>
 #endif
 
@@ -2474,6 +2476,9 @@ QString QSysInfo::currentCpuArchitecture()
 #elif defined(Q_OS_DARWIN) && !defined(Q_OS_MACOS)
     // iOS-based OSes do not return the architecture on uname(2)'s result.
     return buildCpuArchitecture();
+#elif defined(Q_OS_MBED)
+    qDebug("TODO: QSysInfo::currentCpuArchitecture");
+    return buildCpuArchitecture();
 #elif defined(Q_OS_UNIX)
     long ret = -1;
     struct utsname u;
@@ -2611,6 +2616,8 @@ QString QSysInfo::kernelType()
 {
 #if defined(Q_OS_WIN)
     return QStringLiteral("winnt");
+#elif defined(Q_OS_MBED)
+    return QStringLiteral("mbed");
 #elif defined(Q_OS_UNIX)
     struct utsname u;
     if (uname(&u) == 0)
@@ -2638,6 +2645,10 @@ QString QSysInfo::kernelVersion()
     const auto osver = QOperatingSystemVersion::current();
     return QString::number(osver.majorVersion()) + QLatin1Char('.') + QString::number(osver.minorVersion())
             + QLatin1Char('.') + QString::number(osver.microVersion());
+#elif defined(Q_OS_MBED)
+    mbed_stats_sys_t stats;
+    mbed_stats_sys_get(&stats);
+    return QString::number(stats.os_version);
 #else
     struct utsname u;
     if (uname(&u) == 0)
@@ -2818,6 +2829,8 @@ QString QSysInfo::prettyProductName()
             + QString::number(version.minorVersion());
 #elif defined(Q_OS_HAIKU)
     return QLatin1String("Haiku ") + productVersion();
+#elif defined(Q_OS_MBED)
+    qDebug("TODO: QSysInfo::prettyProductName");
 #elif defined(Q_OS_UNIX)
 #  ifdef USE_ETC_OS_RELEASE
     QUnixOSVersion unixOsVersion;
@@ -2857,6 +2870,8 @@ QString QSysInfo::machineHostName()
     struct utsname u;
     if (uname(&u) == 0)
         return QString::fromLocal8Bit(u.nodename);
+#elif defined(Q_OS_MBED)
+    qDebug("TODO: QSysInfo::machineHostName");
 #else
 #  ifdef Q_OS_WIN
     // Important: QtNetwork depends on machineHostName() initializing ws2_32.dll

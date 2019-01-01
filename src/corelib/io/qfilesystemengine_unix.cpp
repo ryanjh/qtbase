@@ -865,6 +865,8 @@ QString QFileSystemEngine::resolveUserName(uint userId)
 #if !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && !defined(Q_OS_OPENBSD) && !defined(Q_OS_VXWORKS)
     struct passwd entry;
     getpwuid_r(userId, &entry, buf.data(), buf.size(), &pw);
+#elif defined(Q_OS_MBED)
+    qDebug("TODO: QFileSystemEngine::resolveUserName");
 #else
     pw = getpwuid(userId);
 #endif
@@ -902,6 +904,8 @@ QString QFileSystemEngine::resolveGroupName(uint groupId)
             || errno != ERANGE)
             break;
     }
+#elif defined(Q_OS_MBED)
+    qDebug("TODO: QFileSystemEngine::resolveGroupName");
 #else
     gr = getgrgid(groupId);
 #endif
@@ -979,7 +983,11 @@ bool QFileSystemEngine::fillMetaData(const QFileSystemEntry &entry, QFileSystemM
         statResult = qt_lstatx(nativeFilePath, &statxBuffer);
         if (statResult == -ENOSYS) {
             // use lstst(2)
+#if defined(Q_OS_MBED)
+            qDebug("TODO: QFileSystemEngine::fillMetaData");
+#else
             statResult = QT_LSTAT(nativeFilePath, &statBuffer);
+#endif // Q_OS_MBED
             if (statResult == 0)
                 mode = statBuffer.st_mode;
         } else if (statResult == 0) {
@@ -1224,6 +1232,10 @@ bool QFileSystemEngine::removeDirectory(const QFileSystemEntry &entry, bool remo
     if (Q_UNLIKELY(entry.isEmpty()))
         return emptyFileEntryWarning(), false;
 
+#if defined(Q_OS_MBED)
+    qDebug("TODO: QFileSystemEngine::removeDirectory");
+    return false;
+#else
     if (removeEmptyParents) {
         QString dirName = QDir::cleanPath(entry.filePath());
         for (int oldslash = 0, slash=dirName.length(); slash > 0; oldslash = slash) {
@@ -1242,6 +1254,7 @@ bool QFileSystemEngine::removeDirectory(const QFileSystemEntry &entry, bool remo
         return true;
     }
     return rmdir(QFile::encodeName(entry.filePath()).constData()) == 0;
+#endif // Q_OS_MBED
 }
 
 //static
@@ -1249,8 +1262,12 @@ bool QFileSystemEngine::createLink(const QFileSystemEntry &source, const QFileSy
 {
     if (Q_UNLIKELY(source.isEmpty() || target.isEmpty()))
         return emptyFileEntryWarning(), false;
+#if defined(Q_OS_MBED)
+    qDebug("TODO: QFileSystemEngine::createLink");
+#else
     if (::symlink(source.nativeFilePath().constData(), target.nativeFilePath().constData()) == 0)
         return true;
+#endif // Q_OS_MBED
     error = QSystemError(errno, QSystemError::StandardLibraryError);
     return false;
 }
@@ -1403,7 +1420,12 @@ bool QFileSystemEngine::setPermissions(const QFileSystemEntry &entry, QFile::Per
         return emptyFileEntryWarning(), false;
 
     mode_t mode = toMode_t(permissions);
+#if defined(Q_OS_MBED)
+    bool success = false;
+    qDebug("TODO: QFileSystemEngine::setPermissions - entry");
+#else
     bool success = ::chmod(entry.nativeFilePath().constData(), mode) == 0;
+#endif // Q_OS_MBED
     if (success && data) {
         data->entryFlags &= ~QFileSystemMetaData::Permissions;
         data->entryFlags |= QFileSystemMetaData::MetaDataFlag(uint(permissions));
@@ -1418,8 +1440,12 @@ bool QFileSystemEngine::setPermissions(const QFileSystemEntry &entry, QFile::Per
 bool QFileSystemEngine::setPermissions(int fd, QFile::Permissions permissions, QSystemError &error, QFileSystemMetaData *data)
 {
     mode_t mode = toMode_t(permissions);
-
+#if defined(Q_OS_MBED)
+    bool success = false;
+    qDebug("TODO: QFileSystemEngine::setPermissions - fd");
+#else
     bool success = ::fchmod(fd, mode) == 0;
+#endif // Q_OS_MBED
     if (success && data) {
         data->entryFlags &= ~QFileSystemMetaData::Permissions;
         data->entryFlags |= QFileSystemMetaData::MetaDataFlag(uint(permissions));
@@ -1531,7 +1557,12 @@ QString QFileSystemEngine::tempPath()
 bool QFileSystemEngine::setCurrentPath(const QFileSystemEntry &path)
 {
     int r;
+#if defined(Q_OS_MBED)
+    r = 0;
+    qDebug("TODO: QFileSystemEngine::setCurrentPath");
+#else
     r = QT_CHDIR(path.nativeFilePath().constData());
+#endif // Q_OS_MBED
     return r >= 0;
 }
 
@@ -1545,6 +1576,9 @@ QFileSystemEntry QFileSystemEngine::currentPath()
         ::free(currentName);
     }
 #else
+#if defined(Q_OS_MBED)
+    qDebug("TODO: QFileSystemEngine::currentPath");
+#else
     char currentName[PATH_MAX+1];
     if (::getcwd(currentName, PATH_MAX)) {
 #if defined(Q_OS_VXWORKS) && defined(VXWORKS_VXSIM)
@@ -1556,6 +1590,7 @@ QFileSystemEntry QFileSystemEngine::currentPath()
 #endif
         result = QFileSystemEntry(QByteArray(currentName), QFileSystemEntry::FromNativePath());
     }
+#endif // Q_OS_MBED
 # if defined(QT_DEBUG)
     if (result.isEmpty())
         qWarning("QFileSystemEngine::currentPath: getcwd() failed");

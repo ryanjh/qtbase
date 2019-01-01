@@ -147,8 +147,12 @@ static bool _q_resolveEntryAndCreateLegacyEngine_recursive(QFileSystemEntry &ent
 
         if (ch == QLatin1Char(':')) {
             if (prefixSeparator == 0) {
+#if defined(Q_OS_MBED)
+                qDebug("TODO: _q_resolveEntryAndCreateLegacyEngine_recursive");
+#else
                 engine = new QResourceFileEngine(filePath);
                 return _q_checkEntry(engine, resolvingEntry);
+#endif // Q_OS_MBED
             }
 
             if (prefixSeparator == 1)

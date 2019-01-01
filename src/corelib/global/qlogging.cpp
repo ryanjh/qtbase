@@ -1777,10 +1777,11 @@ static void qt_message_print(QtMsgType msgType, const QMessageLogContext &contex
 #ifndef QT_BOOTSTRAPPED
     // qDebug, qWarning, ... macros do not check whether category is enabled
     if (isDefaultCategory(context.category)) {
-        if (QLoggingCategory *defaultCategory = QLoggingCategory::defaultCategory()) {
-            if (!defaultCategory->isEnabled(msgType))
-                return;
-        }
+        // TODO: Q_OS_MBED
+        //if (QLoggingCategory *defaultCategory = QLoggingCategory::defaultCategory()) {
+        //    if (!defaultCategory->isEnabled(msgType))
+        //        return;
+        //}
     }
 #endif
 

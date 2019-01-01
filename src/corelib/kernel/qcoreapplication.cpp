@@ -487,8 +487,12 @@ QCoreApplicationPrivate::QCoreApplicationPrivate(int &aargc, char **aargv, uint 
     QCoreApplicationPrivate::is_app_closing = false;
 
 #  if defined(Q_OS_UNIX)
+#if defined(Q_OS_MBED)
+    qDebug("TODO: QCoreApplicationPrivate::QCoreApplicationPrivate");
+#else
     if (Q_UNLIKELY(!setuidAllowed && (geteuid() != getuid())))
         qFatal("FATAL: The application binary appears to be running setuid, this is a security hole.");
+#endif // Q_OS_MBED
 #  endif // Q_OS_UNIX
 
     QThread *cur = QThread::currentThread(); // note: this may end up setting theMainThread!
@@ -2286,7 +2290,11 @@ QString QCoreApplication::applicationFilePath()
               Otherwise, the file path has to be determined using the
               PATH environment variable.
             */
+#if defined(Q_OS_MBED)
+            qDebug("TODO: QCoreApplication::applicationFilePath");
+#else
             absPath = QStandardPaths::findExecutable(argv0);
+#endif
         }
 
         absPath = QDir::cleanPath(absPath);

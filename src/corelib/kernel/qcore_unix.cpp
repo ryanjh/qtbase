@@ -65,6 +65,10 @@ QByteArray qt_readlink(const char *path)
 
     QByteArray buf(256, Qt::Uninitialized);
 
+#if defined(Q_OS_MBED)
+    ssize_t len = -1;
+    qDebug("TODO: qt_readlink");
+#else
     ssize_t len = ::readlink(path, buf.data(), buf.size());
     while (len == buf.size()) {
         // readlink(2) will fill our buffer and not necessarily terminate with NUL;
@@ -77,6 +81,7 @@ QByteArray qt_readlink(const char *path)
         buf.resize(buf.size() * 2);
         len = ::readlink(path, buf.data(), buf.size());
     }
+#endif // Q_OS_MBED
 
     if (len == -1)
         return QByteArray();
@@ -124,7 +129,15 @@ static inline int timespecToMillisecs(const struct timespec *ts)
 #endif
 
 // defined in qpoll.cpp
+#if defined(Q_OS_MBED)
+int qt_poll(struct pollfd *fds, nfds_t nfds, const struct timespec *timeout_ts)
+{
+    qDebug("TODO: qt_poll");
+    return 0;
+}
+#else
 int qt_poll(struct pollfd *fds, nfds_t nfds, const struct timespec *timeout_ts);
+#endif // Q_OS_MBED
 
 static inline int qt_ppoll(struct pollfd *fds, nfds_t nfds, const struct timespec *timeout_ts)
 {

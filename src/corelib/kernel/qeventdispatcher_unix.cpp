@@ -151,6 +151,9 @@ bool QThreadPipe::init()
 
     initThreadPipeFD(fds[0]);
     fds[1] = fds[0];
+#elif defined(__MBED__)
+    // do nothing.
+    qDebug("TODO: QThreadPipe::init");
 #else
 #  ifndef QT_NO_EVENTFD
     if ((fds[0] = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC)) >= 0)
