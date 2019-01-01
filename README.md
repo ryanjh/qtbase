@@ -33,5 +33,5 @@ Released Qt5 libraries ported to Arm Mbed-OS
 https://github.com/ryanjh/Qt5
 
 Examples:
-https://os.mbed.com/users/ryanjh31011/code/qt5-mbed-example-blinky/
-https://os.mbed.com/users/ryanjh31011/code/qt5-mbed-example-sys-info/
+* https://os.mbed.com/users/ryanjh31011/code/qt5-mbed-example-blinky/
+* https://os.mbed.com/users/ryanjh31011/code/qt5-mbed-example-sys-info/
